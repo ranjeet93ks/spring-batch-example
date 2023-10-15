@@ -1,4 +1,4 @@
-package com.spring.batch;
+package com.ranjs.spring.batch;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

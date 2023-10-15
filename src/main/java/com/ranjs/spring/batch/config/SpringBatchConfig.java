@@ -1,4 +1,4 @@
-package com.spring.batch.config;
+package com.ranjs.spring.batch.config;
 
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
@@ -16,11 +16,15 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.task.SimpleAsyncTaskExecutor;
 import org.springframework.core.task.TaskExecutor;
-import com.spring.batch.entity.Customer;
-import com.spring.batch.respository.CustomerRepository;
+
+import com.ranjs.spring.batch.entity.Customer;
+import com.ranjs.spring.batch.respository.CustomerRepository;
+
+import lombok.AllArgsConstructor;
 
 @Configuration
 @EnableBatchProcessing
+@AllArgsConstructor
 public class SpringBatchConfig {
 
 	private JobBuilderFactory jobBuilderFactory;
@@ -28,14 +32,6 @@ public class SpringBatchConfig {
 	private StepBuilderFactory stepBuilderFactory;
 
 	private CustomerRepository customerRepository;
-
-	public SpringBatchConfig(JobBuilderFactory jobBuilderFactory, StepBuilderFactory stepBuilderFactory,
-			CustomerRepository customerRepository) {
-		super();
-		this.jobBuilderFactory = jobBuilderFactory;
-		this.stepBuilderFactory = stepBuilderFactory;
-		this.customerRepository = customerRepository;
-	}
 
 	@Bean
 	public FlatFileItemReader<Customer> reader() {
@@ -92,7 +88,7 @@ public class SpringBatchConfig {
 	@Bean
 	public TaskExecutor taskExecutor() {
 		SimpleAsyncTaskExecutor asyncTaskExecutor = new SimpleAsyncTaskExecutor();
-		asyncTaskExecutor.setConcurrencyLimit(10);
+		asyncTaskExecutor.setConcurrencyLimit(10); //no. of threads is 10
 		return asyncTaskExecutor;
 	}
 

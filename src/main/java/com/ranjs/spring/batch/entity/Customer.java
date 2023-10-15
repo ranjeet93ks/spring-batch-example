@@ -1,4 +1,4 @@
-package com.spring.batch.entity;
+package com.ranjs.spring.batch.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

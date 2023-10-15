@@ -1,4 +1,4 @@
-package com.spring.batch.controller;
+package com.ranjs.spring.batch.controller;
 
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobParameters;
