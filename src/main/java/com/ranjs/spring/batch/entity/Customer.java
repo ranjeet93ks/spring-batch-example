@@ -1,9 +1,10 @@
 package com.ranjs.spring.batch.entity;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+//in spring boot 3x -> javax.persistence replaced with jakarta.persistence
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "CUSTOMERS_INFO")

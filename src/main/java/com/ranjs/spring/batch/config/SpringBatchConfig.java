@@ -3,8 +3,11 @@ package com.ranjs.spring.batch.config;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
-import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
-import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
+import org.springframework.batch.core.job.builder.JobBuilder;
+import org.springframework.batch.core.repository.JobRepository;
+import org.springframework.batch.core.step.builder.StepBuilder;
+//import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
+//import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.item.data.RepositoryItemWriter;
 import org.springframework.batch.item.file.FlatFileItemReader;
 import org.springframework.batch.item.file.LineMapper;
@@ -16,6 +19,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.task.SimpleAsyncTaskExecutor;
 import org.springframework.core.task.TaskExecutor;
+import org.springframework.transaction.PlatformTransactionManager;
 
 import com.ranjs.spring.batch.entity.Customer;
 import com.ranjs.spring.batch.respository.CustomerRepository;
@@ -23,13 +27,13 @@ import com.ranjs.spring.batch.respository.CustomerRepository;
 import lombok.AllArgsConstructor;
 
 @Configuration
-@EnableBatchProcessing
+//@EnableBatchProcessing //not required spring boot 3x
 @AllArgsConstructor
 public class SpringBatchConfig {
 
-	private JobBuilderFactory jobBuilderFactory;
-
-	private StepBuilderFactory stepBuilderFactory;
+	// both deprecated in sprinboot 3x
+	// private JobBuilderFactory jobBuilderFactory;
+	// private StepBuilderFactory stepBuilderFactory;
 
 	private CustomerRepository customerRepository;
 
@@ -73,22 +77,33 @@ public class SpringBatchConfig {
 		return writer;
 	}
 
+	// JobRepository jobRepository is added ads para in step1 n runJob method in
+	// springboot 3x
 	@Bean
-	public Step step1() {
-		return stepBuilderFactory.get("csv-step").<Customer, Customer>chunk(10).reader(reader()).processor(processor())
-				.writer(writer()).taskExecutor(taskExecutor()).build();
+	// public Step step1() {
+	public Step step1(JobRepository jobRepository, PlatformTransactionManager transactionManager) {
+		return
+		// stepBuilderFactory.get("csv-step").<Customer,
+		// Customer>chunk(10).reader(reader()).processor(processor())
+		// .writer(writer()).taskExecutor(taskExecutor()).build();
+
+		new StepBuilder("csv-step", jobRepository).<Customer, Customer>chunk(10, transactionManager).reader(reader())
+				.processor(processor()).writer(writer()).taskExecutor(taskExecutor()).build();
 	}
 
 	@Bean
-	public Job runJob() {
-		return jobBuilderFactory.get("importCustomers").flow(step1()).end().build();
+	// public Job runJob() {
+	public Job runJob(JobRepository jobRepository, PlatformTransactionManager transactionManager) {
+		return
+		// jobBuilderFactory.get("importCustomers").flow(step1()).end().build();
+		new JobBuilder("importCustomers", jobRepository).flow(step1(jobRepository, transactionManager)).end().build();
 
 	}
 
 	@Bean
 	public TaskExecutor taskExecutor() {
 		SimpleAsyncTaskExecutor asyncTaskExecutor = new SimpleAsyncTaskExecutor();
-		asyncTaskExecutor.setConcurrencyLimit(10); //no. of threads is 10
+		asyncTaskExecutor.setConcurrencyLimit(10); // no. of threads is 10
 		return asyncTaskExecutor;
 	}
 
