@@ -21,8 +21,9 @@ public class JobService {
 	private Job job;
 
 	public void importCsvToDBJob() {
+		//select * from  batch_job_execution_params;
 		JobParameters jobParameters = new JobParametersBuilder().addLong("startAt", System.currentTimeMillis())
-				.toJobParameters();
+				.addString("Country", "India").toJobParameters();
 		try {
 			jobLauncher.run(job, jobParameters);
 		} catch (JobExecutionAlreadyRunningException | JobRestartException | JobInstanceAlreadyCompleteException
